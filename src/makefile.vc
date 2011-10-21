@@ -7,19 +7,20 @@ INCLUDEPATHS= \
   /I"/boost" \
   /I"/db/build_windows" \
   /I"/openssl/include" \
-  /I"/wxwidgets/lib/vc_lib/mswu" \
-  /I"/wxwidgets/include"
+  /I"/miniupnpc"
 
 LIBPATHS= \
   /LIBPATH:"/boost/stage/lib" \
   /LIBPATH:"/db/build_windows/Release" \
   /LIBPATH:"/openssl/lib" \
-  /LIBPATH:"/wxwidgets/lib/vc_lib" \
+  /LIBPATH:"/miniupnpc/msvc/Release" \
   /NODEFAULTLIB:libc.lib /NODEFAULTLIB:libcmt.lib \
   /NODEFAULTLIB:libcd.lib /NODEFAULTLIB:libcmtd.lib \
   /NODEFAULTLIB:msvcrtd.lib
 
-WXLIBS=wxmsw29u.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib
+USE_UPNP=0
+
+DEFS=/DWIN32 /D_WINDOWS /DNOPCH /DNOMINMAX
 
 LIBS= \
   libboost_system-vc100-mt.lib \
@@ -27,29 +28,60 @@ LIBS= \
   libboost_program_options-vc100-mt.lib \
   libboost_thread-vc100-mt.lib \
   libdb47s.lib \
-  libeay32.lib \
-  kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib ws2_32.lib shlwapi.lib
+  libeay32.lib
 
-DEFS=/DWIN32 /D__WXMSW__ /D_WINDOWS /DNOPCH
+!IFDEF USE_UPNP
+LIBS=$(LIBS) miniupnpc.lib
+DEFS=$(DEFS) /DUSE_UPNP=$(USE_UPNP)
+!ENDIF
+
+LIBS=$(LIBS) \
+  kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib ws2_32.lib shlwapi.lib iphlpapi.lib
+
 DEBUGFLAGS=/Os
 CFLAGS=/MD /c /nologo /EHsc /GR /Zm300 $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS)
-HEADERS=headers.h strlcpy.h serialize.h uint256.h util.h key.h bignum.h base58.h \
-    script.h db.h net.h irc.h main.h rpc.h uibase.h ui.h noui.h init.h
+HEADERS = \
+    base58.h \
+    bignum.h \
+    crypter.h \
+    db.h \
+    headers.h \
+    init.h \
+    irc.h \
+    key.h \
+    keystore.h \
+    main.h \
+    net.h \
+    noui.h \
+    protocol.h \
+    bitcoinrpc.h \
+    script.h \
+    serialize.h \
+    strlcpy.h \
+    ui.h \
+    uibase.h \
+    uint256.h \
+    util.h \
+    wallet.h
 
 OBJS= \
-    obj\util.obj \
-    obj\script.obj \
-    obj\db.obj \
-    obj\net.obj \
-    obj\irc.obj \
-    obj\main.obj \
-    obj\rpc.obj \
-    obj\init.obj \
-    cryptopp\obj\sha.obj \
-    cryptopp\obj\cpu.obj
+    obj\crypter.o \
+    obj\db.o \
+    obj\init.o \
+    obj\irc.o \
+    obj\keystore.o \
+    obj\main.o \
+    obj\net.o \
+    obj\rpc.o \
+    obj\protocol.o \
+    obj\script.o \
+    obj\util.o \
+    obj\wallet.o
+
+RC=../share
 
 
-all: bitcoin.exe
+all: bitcoind.exe
 
 
 .cpp{obj}.obj:
@@ -65,28 +97,21 @@ obj\net.obj: $(HEADERS)
 
 obj\irc.obj: $(HEADERS)
 
+obj\keystore.obj: $(HEADERS)
+
 obj\main.obj: $(HEADERS)
+
+obj\wallet.obj: $(HEADERS)
 
 obj\rpc.obj: $(HEADERS)
 
 obj\init.obj: $(HEADERS)
 
+obj\crypter.obj: $(HEADERS)
+
 obj\ui.obj: $(HEADERS)
 
 obj\uibase.obj: $(HEADERS)
-
-cryptopp\obj\sha.obj: cryptopp\sha.cpp
-    cl $(CFLAGS) /O2 /DCRYPTOPP_DISABLE_ASM /Fo$@ %s
-
-cryptopp\obj\cpu.obj: cryptopp\cpu.cpp
-    cl $(CFLAGS) /O2 /DCRYPTOPP_DISABLE_ASM /Fo$@ %s
-
-obj\ui.res: ui.rc  rc/bitcoin.ico rc/check.ico rc/send16.bmp rc/send16mask.bmp rc/send16masknoshadow.bmp rc/send20.bmp rc/send20mask.bmp rc/addressbook16.bmp rc/addressbook16mask.bmp rc/addressbook20.bmp rc/addressbook20mask.bmp
-    rc $(INCLUDEPATHS) $(DEFS) /Fo$@ %s
-
-bitcoin.exe: $(OBJS) obj\ui.obj obj\uibase.obj obj\ui.res
-    link /nologo /SUBSYSTEM:WINDOWS /OUT:$@ $(LIBPATHS) $** $(WXLIBS) $(LIBS)
-
 
 .cpp{obj\nogui}.obj:
     cl $(CFLAGS) /Fo$@ %s
@@ -101,7 +126,11 @@ obj\nogui\net.obj: $(HEADERS)
 
 obj\nogui\irc.obj: $(HEADERS)
 
+obj\nogui\keystore.obj: $(HEADERS)
+
 obj\nogui\main.obj: $(HEADERS)
+
+obj\nogui\wallet.obj: $(HEADERS)
 
 obj\nogui\rpc.obj: $(HEADERS)
 
@@ -110,10 +139,9 @@ obj\nogui\init.obj: $(HEADERS)
 bitcoind.exe: $(OBJS:obj\=obj\nogui\) obj\ui.res
     link /nologo /OUT:$@ $(LIBPATHS) $** $(LIBS)
 
-
 clean:
     -del /Q obj\*
     -del /Q obj\nogui\*
-    -del /Q cryptopp\obj\*
     -del /Q *.ilk
     -del /Q *.pdb
+    -del /Q bitcoind.exe

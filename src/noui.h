@@ -1,4 +1,5 @@
 // Copyright (c) 2010 Satoshi Nakamoto
+// Copyright (c) 2011 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file license.txt or http://www.opensource.org/licenses/mit-license.php.
 #ifndef BITCOIN_NOUI_H
@@ -63,6 +64,10 @@ inline void UIThreadCall(boost::function0<void> fn)
 }
 
 inline void MainFrameRepaint()
+{
+}
+
+inline void InitMessage(const std::string &message)
 {
 }
 
