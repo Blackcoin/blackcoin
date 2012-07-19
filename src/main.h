@@ -399,6 +399,16 @@ public:
     mutable int nDoS;
     bool DoS(int nDoSIn, bool fIn) const { nDoS += nDoSIn; return fIn; }
 
+    bool electrum_flag;
+
+    void set_electrum_flag(bool x){
+      electrum_flag = x;
+    }
+
+    bool get_electrum_flag(){
+      return electrum_flag;
+    }
+
     CTransaction()
     {
         SetNull();
@@ -420,6 +430,7 @@ public:
         vout.clear();
         nLockTime = 0;
         nDoS = 0;  // Denial-of-service prevention
+	set_electrum_flag(false);
     }
 
     bool IsNull() const

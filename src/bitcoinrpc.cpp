@@ -1782,6 +1782,43 @@ Value gettransaction(const Array& params, bool fHelp)
 }
 
 
+Value importtransaction(const Array& params, bool fHelp)
+{
+  string hexdump;
+  if (fHelp || params.size() != 1 || (hexdump=params[0].get_str()).size()&1)
+    throw runtime_error(
+            "importtransaction <hexdata>\n"
+            "Import an offline transaction to announce it into the network");
+
+  std::vector<unsigned char> rawtx;
+  for (int i=0; i<hexdump.size(); i+=2)
+    {
+      int v;
+      if (sscanf(hexdump.substr(i,2).c_str(), "%x", &v)!=1)
+	throw JSONRPCError(-4, "Error in hex data.");
+      rawtx.push_back((unsigned char)v);
+    }
+try
+  {
+    CDataStream ss(rawtx, SER_NETWORK, PROTOCOL_VERSION);
+    CTransaction tx;
+    ss >> tx;
+    CInv inv(MSG_TX, tx.GetHash());
+
+    CTxDB txdb("r");
+    if(! tx.AcceptToMemoryPool(txdb, true)) throw JSONRPCError(-4, "Transaction not accepted to memory pool.");
+    CDataStream msg(rawtx, SER_NETWORK, PROTOCOL_VERSION);
+    RelayMessage(inv, msg);
+    return tx.GetHash().GetHex();
+  }
+ catch (std::exception& e)
+   {
+     throw JSONRPCError(-4, "Exception while parsing the transaction data.");
+   }
+
+}
+
+
 Value backupwallet(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
@@ -2351,8 +2388,6 @@ Value getmemorypool(const Array& params, bool fHelp)
         result.push_back(Pair("version", pblock->nVersion));
         result.push_back(Pair("previousblockhash", pblock->hashPrevBlock.GetHex()));
         result.push_back(Pair("transactions", transactions));
-        result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].vout[0].nValue));
-        result.push_back(Pair("coinbaseflags", HexStr(COINBASE_FLAGS.begin(), COINBASE_FLAGS.end())));
         result.push_back(Pair("time", (int64_t)pblock->nTime));
         result.push_back(Pair("mintime", (int64_t)pindexPrev->GetMedianTimePast()+1));
         result.push_back(Pair("curtime", (int64_t)GetAdjustedTime()));
@@ -2529,6 +2564,7 @@ static const CRPCCommand vRPCCommands[] =
     { "listsinceblock",         &listsinceblock,         false },
     { "dumpprivkey",            &dumpprivkey,            false },
     { "importprivkey",          &importprivkey,          false },
+    { "importtransaction",      &importtransaction,      false },
     { "sendrawtx",              &sendrawtx,              false },
 };
 
