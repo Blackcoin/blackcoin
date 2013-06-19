@@ -80,6 +80,6 @@ cp *.h miniupnpc/
 Litecoin
 -------
 DOS prompt:
-cd \litecoin\src
+cd \blackcoin\src
 mingw32-make -f makefile.mingw
-strip litecoind.exe
+strip blackcoind.exe

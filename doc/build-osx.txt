@@ -8,7 +8,7 @@ cryptographic software written by Eric Young (eay@cryptsoft.com) and UPnP
 software written by Thomas Bernard.
 
 
-Mac OS X litecoind build instructions
+Mac OS X blackcoind build instructions
 Laszlo Hanyecz <solar@heliacal.net>
 Douglas Huff <dhuff@jrbobdobbs.org>
 
@@ -28,7 +28,7 @@ install DVD, but if not, you can get the current version from https://developer.
 
 1.  Clone the github tree to get the source code:
 
-git clone git@github.com:litecoin-project/litecoin.git litecoin
+git clone git@github.com:blackcoin-project/blackcoin.git blackcoin
 
 2.  Download and install MacPorts from http://www.macports.org/
 
@@ -42,14 +42,14 @@ sudo port install boost db48 openssl miniupnpc
 Optionally install qrencode (and set USE_QRCODE=1):
 sudo port install qrencode
 
-4.  Now you should be able to build litecoind:
+4.  Now you should be able to build blackcoind:
 
-cd litecoin/src
+cd blackcoin/src
 make -f makefile.osx USE_IPV6=1
 
 Run:
-  ./litecoind --help  # for a list of command-line options.
+  ./blackcoind --help  # for a list of command-line options.
 Run
-  ./litecoind -daemon # to start the litecoin daemon.
+  ./blackcoind -daemon # to start the blackcoin daemon.
 Run
-  ./litecoind help # When the daemon is running, to get a list of RPC commands
+  ./blackcoind help # When the daemon is running, to get a list of RPC commands

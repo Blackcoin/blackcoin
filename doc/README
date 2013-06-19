@@ -23,10 +23,10 @@ You need the Qt4 run-time libraries to run Litecoin-Qt. On Debian or Ubuntu:
   sudo apt-get install libqtgui4
 
 Unpack the files into a directory and run:
- bin/32/litecoin-qt (GUI, 32-bit)
- bin/32/litecoind (headless, 32-bit)
- bin/64/litecoin-qt (GUI, 64-bit)
- bin/64/litecoind (headless, 64-bit)
+ bin/32/blackcoin-qt (GUI, 32-bit)
+ bin/32/blackcoind (headless, 32-bit)
+ bin/64/blackcoin-qt (GUI, 64-bit)
+ bin/64/blackcoind (headless, 64-bit)
 
 
 See the documentation at the bitcoin wiki:

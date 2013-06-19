@@ -78,7 +78,7 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    if(uri.scheme() != QString("litecoin"))
+    if(uri.scheme() != QString("blackcoin"))
         return false;
 
     // check if the address is valid
@@ -128,13 +128,13 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 {
-    // Convert litecoin:// to litecoin:
+    // Convert blackcoin:// to blackcoin:
     //
-    //    Cannot handle this later, because litecoin:// will cause Qt to see the part after // as host,
+    //    Cannot handle this later, because blackcoin:// will cause Qt to see the part after // as host,
     //    which will lowercase it (and thus invalidate the address).
-    if(uri.startsWith("litecoin://"))
+    if(uri.startsWith("blackcoin://"))
     {
-        uri.replace(0, 11, "litecoin:");
+        uri.replace(0, 11, "blackcoin:");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
@@ -360,7 +360,7 @@ boost::filesystem::path static GetAutostartDir()
 
 boost::filesystem::path static GetAutostartFilePath()
 {
-    return GetAutostartDir() / "litecoin.desktop";
+    return GetAutostartDir() / "blackcoin.desktop";
 }
 
 bool GetStartOnSystemStartup()
@@ -398,7 +398,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         boost::filesystem::ofstream optionFile(GetAutostartFilePath(), std::ios_base::out|std::ios_base::trunc);
         if (!optionFile.good())
             return false;
-        // Write a litecoin.desktop file to the autostart directory:
+        // Write a blackcoin.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         optionFile << "Name=Litecoin\n";
@@ -425,7 +425,7 @@ HelpMessageBox::HelpMessageBox(QWidget *parent) :
     header = tr("Litecoin-Qt") + " " + tr("version") + " " +
         QString::fromStdString(FormatFullVersion()) + "\n\n" +
         tr("Usage:") + "\n" +
-        "  litecoin-qt [" + tr("command-line options") + "]                     " + "\n";
+        "  blackcoin-qt [" + tr("command-line options") + "]                     " + "\n";
 
     coreOptions = QString::fromStdString(HelpMessage());
 
