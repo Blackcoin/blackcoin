@@ -300,7 +300,7 @@ void ThreadIRCSeed2(void* parg)
         } else {
             // randomly join #blackcoin00-#blackcoin99
             int channel_number = GetRandInt(100);
-            channel_number = 0; // Litecoin: for now, just use one channel
+            channel_number = 0; // Blackcoin: for now, just use one channel
             Send(hSocket, strprintf("JOIN #blackcoin%02d\r", channel_number).c_str());
             Send(hSocket, strprintf("WHO #blackcoin%02d\r", channel_number).c_str());
         }

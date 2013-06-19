@@ -13,7 +13,7 @@ Laszlo Hanyecz <solar@heliacal.net>
 Douglas Huff <dhuff@jrbobdobbs.org>
 
 
-See readme-qt.rst for instructions on building Litecoin-QT, the
+See readme-qt.rst for instructions on building Blackcoin-QT, the
 graphical user interface.
 
 Tested on 10.5, 10.6 and 10.7 intel.  PPC is not supported because it's big-endian.

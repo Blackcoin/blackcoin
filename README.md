@@ -1,4 +1,4 @@
-Litecoin - a lite version of Bitcoin optimized for CPU mining using scrypt as a proof of work scheme.
+Blackcoin - a lite version of Bitcoin optimized for CPU mining using scrypt as a proof of work scheme.
  - 2.5 minute block targets
  - subsidy halves in 840k blocks (~4 years)
  - ~84 million total coins
@@ -20,7 +20,7 @@ or are controversial.
 
 The master branch is regularly built and tested, but is not guaranteed
 to be completely stable. Tags are regularly created to indicate new
-official, stable release versions of Litecoin.
+official, stable release versions of Blackcoin.
 
 Feature branches are created when there are major new features being
 worked on by several people.
